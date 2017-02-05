@@ -1,14 +1,23 @@
 require 'sinatra'
 require 'sinatra/reloader'
 
+@@guesses = 5
 SECRET_NUMBER = rand(100)
 
 get '/' do
-	if !params['guess'].nil?
+	if @@guesses == 0
+		number = rand(100)
+		@@guesses = 5
+		message = "You lost! A new number has been generated!"
+		color = "White"
+	elsif !params['guess'].nil?
 		guess = params['guess'].to_i
-		params = check_guess(guess)
+		vals = check_guess(guess)
+		message = vals[0]
+		color = vals[1]
 	end
-	erb :index, :locals => {:message => params[0], :color => params[1]}
+	@@guesses-=1
+	erb :index, :locals => {:message => message, :color => color}
 end
 
 def check_guess(guess)
